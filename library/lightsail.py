@@ -285,20 +285,19 @@ def create_instance(module, client, instance_name):
             module.fail_json(msg="Wait for instance start timeout at %s" % time.asctime())
 
         # Attempt to open ports
-        if open_ports:
-            if inst is not None:
-                try:
-                    for o in open_ports:
-                        resp = client.open_instance_public_ports(
-                            instanceName=instance_name,
-                            portInfo={
-                                'fromPort': o['from_port'],
-                                'toPort':   o['to_port'],
-                                'protocol': o['protocol']
-                            }
-                        )
-                except botocore.exceptions.ClientError as e:
-                    module.fail_json(msg='Error opening ports for instance {0}, error: {1}'.format(instance_name, e))
+        if open_ports and inst is not None:
+            try:
+                for o in open_ports:
+                    resp = client.open_instance_public_ports(
+                        instanceName=instance_name,
+                        portInfo={
+                            'fromPort': o['from_port'],
+                            'toPort':   o['to_port'],
+                            'protocol': o['protocol']
+                        }
+                    )
+            except botocore.exceptions.ClientError as e:
+                module.fail_json(msg='Error opening ports for instance {0}, error: {1}'.format(instance_name, e))
 
         changed = True
 

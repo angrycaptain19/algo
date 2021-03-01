@@ -90,7 +90,7 @@ def main():
     if module.params['state'] == 'present' and stackscript is not None:
         module.exit_json(changed=False, stackscript=stackscript._raw_json)
 
-    elif module.params['state'] == 'present' and stackscript is None:
+    elif module.params['state'] == 'present':
         stackscript_json = create_stackscript(
             module, client,
             label=module.params['label'],
@@ -105,7 +105,7 @@ def main():
         stackscript.delete()
         module.exit_json(changed=True, stackscript=stackscript._raw_json)
 
-    elif module.params['state'] == 'absent' and stackscript is None:
+    elif module.params['state'] == 'absent':
         module.exit_json(changed=False, stackscript={})
 
 
