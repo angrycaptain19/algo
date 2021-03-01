@@ -32,10 +32,7 @@ def main():
         module.params['scopes'] = ['https://www.googleapis.com/auth/compute']
 
     items = fetch_list(module, collection(module), query_options(module.params['filters']))
-    if items.get('items'):
-        items = items.get('items')
-    else:
-        items = []
+    items = items.get('items') or []
     return_value = {'resources': items}
     module.exit_json(**return_value)
 
@@ -56,16 +53,15 @@ def query_options(filters):
 
     if len(filters) == 1:
         return filters[0]
-    else:
-        queries = []
-        for f in filters:
-            # For multiple queries, all queries should have ()
-            if f[0] != '(' and f[-1] != ')':
-                queries.append("(%s)" % ''.join(f))
-            else:
-                queries.append(f)
+    queries = []
+    for f in filters:
+        # For multiple queries, all queries should have ()
+        if f[0] != '(' and f[-1] != ')':
+            queries.append("(%s)" % ''.join(f))
+        else:
+            queries.append(f)
 
-        return ' '.join(queries)
+    return ' '.join(queries)
 
 
 def return_if_object(module, response):
